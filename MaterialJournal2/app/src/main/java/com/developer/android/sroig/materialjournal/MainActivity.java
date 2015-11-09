@@ -31,10 +31,10 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        Database.getInstance(this).addTable();
-
         // Uncomment to get rid of everything in DB
-        //Database.getInstance(this).deleteAll();
+        Database.getInstance(this).deleteAll();
+
+        Database.getInstance(this).addTable();
 
         loadCardsList();
     }
@@ -92,9 +92,9 @@ public class MainActivity extends Activity {
     public void createNewJournalItem(View view) {
 
         JournalItem item = new JournalItem();
-        item.setText("Hello");
+        item.setText("Hello this is all of the text to be addded");
         item.setDate(Calendar.getInstance());
-        item.setTitle("Title bruh");
+        item.setTitle("Title");
         item.setLocation("Pike house");
         item.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stars_black_18dp));
 
