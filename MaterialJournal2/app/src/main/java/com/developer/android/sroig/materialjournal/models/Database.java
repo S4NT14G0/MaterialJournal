@@ -1,6 +1,5 @@
 package com.developer.android.sroig.materialjournal.models;
 
-import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,16 +9,11 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.provider.ContactsContract;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * Created by Santiago Roig on 11/5/2015.
@@ -50,32 +44,32 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // When our DB is created we will add our one table
-        addTable();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        //not used in this project, implementation is optional
+        VERSION = newVersion;
+        Log.d("Database - onUpgrade", "OK");
+        onCreate(db);
     }
 
-    private void addTable() {
+    public void addTable() {
 
-        // Execute our SQL statement to create our Journal Table
+         //Execute our SQL statement to create our Journal Table
         instance.getWritableDatabase().execSQL(
-                "create table if not exists " + TABLE_NAME + "\n" +
+                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "\n" +
                         "(\n" +
-                        COLUMNS[0] + " integer primary key autoincrement,\n" +
-                        COLUMNS[1] + " Text,\n" +
-                        COLUMNS[2] + " Text, \n" +
+                        COLUMNS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                        COLUMNS[1] + " VARCHAR(255),\n" +
+                        COLUMNS[2] + " VARCHAR(255), \n" +
                         COLUMNS[3] + " BLOB, \n" +
-                        COLUMNS[4] + " Text, \n" +
-                        COLUMNS[5] + " Text, \n" +
+                        COLUMNS[4] + " VARCHAR(255), \n" +
+                        COLUMNS[5] + " VARCHAR(255) \n" +
                         ");");
-
     }
 
-    public void addRow(JournalItem item) {
+    public long addRow(JournalItem item) {
 
         try {
             //use ContentValues to insert values in the table
@@ -84,26 +78,25 @@ public class Database extends SQLiteOpenHelper {
             values.put(COLUMNS[2], item.getText());
             // Will need to convert image into bytes
             values.put(COLUMNS[3], convertImageToBytes(item.getImage()));
-            values.put(COLUMNS[4], new SimpleDateFormat("MM-DD-YYYY").format(item.getDate()));
+            values.put(COLUMNS[4], item.getDate().toString());
             values.put(COLUMNS[5], item.getLocation().toString());
 
-            instance.getWritableDatabase().insert(TABLE_NAME, null, values);
+            return instance.getWritableDatabase().insert(TABLE_NAME, null, values);
 
         } catch (NullPointerException npe) {
 
-            Log.d("Database - addRandomRow", "NPE - Table doesn't exist");
+            Log.d("Database - addRow", "NPE - Table doesn't exist");
         }
+
+        // If the insert fails
+        return -1;
     }
 
     public JournalItem getRow(int rowIndex) {
         SQLiteDatabase db = instance.getReadableDatabase();
 
-        // Write a SQL Query to select individual row
-        String query = "SELECT * FROM " + TABLE_NAME + "WHERE "
-                + COLUMNS[0] + " = " + rowIndex;
+        Cursor cursor =  db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMNS[0] + " = " + rowIndex , null);
 
-        // Send the query to a cursor object
-        Cursor cursor = db.rawQuery(query, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -112,6 +105,8 @@ public class Database extends SQLiteOpenHelper {
 
         // Construct our item
         JournalItem item = new JournalItem();
+
+        int test = cursor.getCount();
 
         // Build all of the fields
         item.setId(cursor.getInt(cursor.getColumnIndex(COLUMNS[0])));
@@ -127,12 +122,12 @@ public class Database extends SQLiteOpenHelper {
     public  void deleteRow(int rowIndex) {
         SQLiteDatabase db = instance.getWritableDatabase();
 
-        // Write our SQL query to delete row from db
-        String query = "DELETE * FROM " + TABLE_NAME + "WHERE "
-                + COLUMNS[0] + " = " + rowIndex;
+        db.delete(TABLE_NAME, COLUMNS[0] + " ="  + rowIndex, null);
+    }
 
-        // Execute the query
-        db.execSQL(query);
+    public void deleteAll() {
+        instance.getWritableDatabase().execSQL("delete from " + TABLE_NAME);
+        instance.getWritableDatabase().execSQL("Delete from sqlite_sequence where name='" + TABLE_NAME + "'");
     }
 
     private int indexOfColumn(String name) {
@@ -145,11 +140,11 @@ public class Database extends SQLiteOpenHelper {
         return 0;
     }
 
-    public int rowCount(String table) {
+    public int rowCount() {
 
         try {
 
-            int count = (int) DatabaseUtils.queryNumEntries(instance.getReadableDatabase(), table);
+            int count = (int) DatabaseUtils.queryNumEntries(instance.getReadableDatabase(), TABLE_NAME);
 
             return count;
         } catch (SQLiteException sqle) {
@@ -166,7 +161,7 @@ public class Database extends SQLiteOpenHelper {
             values.put(COLUMNS[2], item.getText());
             // Will need to convert image into bytes
             values.put(COLUMNS[3], convertImageToBytes(item.getImage()));
-            values.put(COLUMNS[4], new SimpleDateFormat("MM-DD-YYYY").format(item.getDate()));
+            values.put(COLUMNS[4], dateToString(item.getDate()));
             values.put(COLUMNS[5], item.getLocation().toString());
 
             instance.getWritableDatabase().update(TABLE_NAME,values, COLUMNS[0] + " = " + rowIndex, null);
@@ -196,11 +191,23 @@ public class Database extends SQLiteOpenHelper {
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
 
+    public String dateToString(Calendar date) {
+        String strdate = null;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+        if (date != null) {
+            strdate = sdf.format(date.getTime());
+        }
+
+        return strdate;
+    }
+
     public Calendar stringToDate(String date) {
         Calendar cal = Calendar.getInstance();
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-DD-YYYY");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             cal.setTime(sdf.parse(date));// all done
         } catch (java.text.ParseException e) {
             e.printStackTrace();
