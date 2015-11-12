@@ -26,7 +26,7 @@ public class Database extends SQLiteOpenHelper {
     private static int VERSION = 1;
     private static final String DB_NAME = "MaterialDB";
     private static final String TABLE_NAME = "JournalItems";
-    public static final String[] COLUMNS = {"Id", "Title", "TextEntry", "Image", "Date", "Location"};
+    public static final String[] COLUMNS = {"Id", "Title", "TextEntry", "Tags", "Date", "Location"};
 
     public static synchronized  Database getInstance (Context context) {
         // If we don't have an instance of our DB then create one
@@ -48,7 +48,6 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //not used in this project, implementation is optional
         VERSION = newVersion;
         Log.d("Database - onUpgrade", "OK");
         onCreate(db);
@@ -61,11 +60,11 @@ public class Database extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "\n" +
                         "(\n" +
                         COLUMNS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                        COLUMNS[1] + " VARCHAR(255),\n" +
-                        COLUMNS[2] + " VARCHAR(255), \n" +
-                        COLUMNS[3] + " BLOB, \n" +
-                        COLUMNS[4] + " VARCHAR(255), \n" +
-                        COLUMNS[5] + " VARCHAR(255) \n" +
+                        COLUMNS[1] + " TEXT,\n" +
+                        COLUMNS[2] + " TEXT, \n" +
+                        COLUMNS[3] + " TEXT, \n" +
+                        COLUMNS[4] + " TEXT, \n" +
+                        COLUMNS[5] + " TEXT \n" +
                         ");");
     }
 
@@ -76,8 +75,9 @@ public class Database extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(COLUMNS[1], item.getTitle());
             values.put(COLUMNS[2], item.getText());
+            values.put(COLUMNS[3], item.getTags());
             // Will need to convert image into bytes
-            values.put(COLUMNS[3], convertImageToBytes(item.getImage()));
+            //values.put(COLUMNS[3], convertImageToBytes(item.getImage()));
             values.put(COLUMNS[4], item.getDate().toString());
             values.put(COLUMNS[5], item.getLocation().toString());
 
@@ -112,7 +112,8 @@ public class Database extends SQLiteOpenHelper {
         item.setId(cursor.getInt(cursor.getColumnIndex(COLUMNS[0])));
         item.setTitle(cursor.getString(cursor.getColumnIndex(COLUMNS[1])));
         item.setText(cursor.getString(cursor.getColumnIndex(COLUMNS[2])));
-        item.setImage(decodeBytesToImage(cursor.getBlob(cursor.getColumnIndex(COLUMNS[3]))));
+        item.setTags(cursor.getString(cursor.getColumnIndex(COLUMNS[3])));
+        //item.setImage(decodeBytesToImage(cursor.getBlob(cursor.getColumnIndex(COLUMNS[3]))));
         item.setDate(stringToDate(cursor.getString(cursor.getColumnIndex(COLUMNS[4]))));
         item.setLocation(cursor.getString(cursor.getColumnIndex(COLUMNS[5])));
 
@@ -128,6 +129,10 @@ public class Database extends SQLiteOpenHelper {
     public void deleteAll() {
         instance.getWritableDatabase().execSQL("delete from " + TABLE_NAME);
         instance.getWritableDatabase().execSQL("Delete from sqlite_sequence where name='" + TABLE_NAME + "'");
+    }
+
+    public void dropTable() {
+        instance.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
 
     private int indexOfColumn(String name) {
@@ -159,8 +164,9 @@ public class Database extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(COLUMNS[1], item.getTitle());
             values.put(COLUMNS[2], item.getText());
+            values.put(COLUMNS[3], item.getTags());
             // Will need to convert image into bytes
-            values.put(COLUMNS[3], convertImageToBytes(item.getImage()));
+            //values.put(COLUMNS[3], convertImageToBytes(item.getImage()));
             values.put(COLUMNS[4], dateToString(item.getDate()));
             values.put(COLUMNS[5], item.getLocation().toString());
 
@@ -168,7 +174,7 @@ public class Database extends SQLiteOpenHelper {
 
         } catch (NullPointerException npe) {
 
-            Log.d("Database - addRandomRow", "NPE - Table doesn't exist");
+            Log.d("Database - update Row", "NPE - Table doesn't exist");
         }
     }
 

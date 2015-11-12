@@ -29,4 +29,5 @@ dependencies {
     //Extra card library, it is required only if you want to use integrations with other libraries
     compile 'com.github.gabrielemariotti.cards:library-extra:1.9.1'
 
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
 }

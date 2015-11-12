@@ -1,7 +1,5 @@
 package com.developer.android.sroig.materialjournal.models;
 
-import android.graphics.Bitmap;
-
 import java.util.Calendar;
 
 /**
@@ -12,18 +10,28 @@ public class JournalItem {
     private long id;
     private String title;
     private String text;
-    private Bitmap image;
+    //private Bitmap image;
     private Calendar date;
     private String location;
 
-
-    public  Bitmap getImage() {
-        return  image;
+    public String getTags() {
+        return tags;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
+
+    private String tags;
+
+
+    //public  Bitmap getImage() {
+    //    return  image;
+    //}
+
+    //public void setImage(Bitmap image) {
+    //    this.image = image;
+    //}
 
     public long getId() {
         return id;

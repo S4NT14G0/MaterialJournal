@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="met_Margin" >
+        <item name="android:layout_margin">10dp</item>
+        <item name="met_floatingLabel">normal</item>
+    </style>
+
 </resources>

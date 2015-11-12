@@ -7,42 +7,102 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
+
+        <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|left"
-            android:text="Title"
-            android:id="@+id/title"/>
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center"
-            android:text="Date"
-            android:inputType="date"
-            android:id="@+id/date"/>
+            android:width="100dp"
+            android:id="@+id/textTitle"
+            android:hint="Title"
+            style="@style/met_Margin" />
 
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fabSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/met_Margin"
             android:layout_gravity="top|right"
             android:layout_margin="16dp"
             android:src="@drawable/ic_done_black_24dp"
+            android:onClick="updateJournalItem"
             fab:fab_type="mini"
             fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_colorRipple="@color/colorAccent"/>
     </FrameLayout>
 
-    <EditText
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/met_Margin"
+            android:layout_gravity="top|left"
+            android:hint="Date"
+            android:width="100dp"
+            android:inputType="date"
+            android:id="@+id/textDate" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:width="200dp"
+            style="@style/met_Margin"
+            android:id="@+id/textTags"
+            android:hint="Tags"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="@style/met_Margin"
+            android:id="@+id/textLocation"
+            android:width="300dp"
+            android:hint="Location"
+            android:editable="false"/>
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fabAddLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/met_Margin"
+            android:layout_gravity="end"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_gps_fixed_black_24dp"
+            android:onClick="addLocation"
+            fab:fab_type="mini"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
+            fab:fab_colorRipple="@color/colorAccent"/>
+
+    </FrameLayout>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:inputType="textMultiLine"
         android:ems="10"
-        android:id="@+id/text"
+        android:id="@+id/textJournal"
+        style="@style/met_Margin"
         android:layout_gravity="center"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:nestedScrollingEnabled="true" />
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="true"
+        android:hint="Journal Entry" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+
+    </FrameLayout>
 
 
 
