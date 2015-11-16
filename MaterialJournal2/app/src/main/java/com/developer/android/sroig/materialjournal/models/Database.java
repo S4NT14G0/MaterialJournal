@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -85,16 +86,45 @@ public class Database extends SQLiteOpenHelper {
 
         } catch (NullPointerException npe) {
 
-            Log.d("Database - addRow", "NPE - Table doesn't exist");
+            Log.d("Add row to db", "Table doesn't exist");
         }
 
         // If the insert fails
         return -1;
     }
 
+    public ArrayList<JournalItem> findItemsByTag(String tag) {
+        SQLiteDatabase db = instance.getReadableDatabase();
+
+        String query = "Select * FROM " + TABLE_NAME + " WHERE " + COLUMNS[3] + " LIKE '%" + tag + "%'";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        ArrayList<JournalItem> items = new ArrayList<JournalItem> ();
+
+        while (cursor.moveToNext() && cursor != null) {
+
+            // Pull each item out of our query
+            JournalItem item = new JournalItem();
+
+            // Build all of the fields
+            item.setId(cursor.getInt(cursor.getColumnIndex(COLUMNS[0])));
+            item.setTitle(cursor.getString(cursor.getColumnIndex(COLUMNS[1])));
+            item.setText(cursor.getString(cursor.getColumnIndex(COLUMNS[2])));
+            item.setTags(cursor.getString(cursor.getColumnIndex(COLUMNS[3])));
+            item.setDate(stringToDate(cursor.getString(cursor.getColumnIndex(COLUMNS[4]))));
+            item.setLocation(cursor.getString(cursor.getColumnIndex(COLUMNS[5])));
+
+            items.add(item);
+        }
+
+        return items;
+    }
+
     public JournalItem getRow(int rowIndex) {
         SQLiteDatabase db = instance.getReadableDatabase();
 
+        // Query to retrieve item by index
         Cursor cursor =  db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMNS[0] + " = " + rowIndex , null);
 
 
@@ -105,8 +135,6 @@ public class Database extends SQLiteOpenHelper {
 
         // Construct our item
         JournalItem item = new JournalItem();
-
-        int test = cursor.getCount();
 
         // Build all of the fields
         item.setId(cursor.getInt(cursor.getColumnIndex(COLUMNS[0])));
@@ -121,12 +149,14 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public  void deleteRow(int rowIndex) {
+        // Delete item from db by it's index
         SQLiteDatabase db = instance.getWritableDatabase();
 
         db.delete(TABLE_NAME, COLUMNS[0] + " ="  + rowIndex, null);
     }
 
     public void deleteAll() {
+        // Delete everything from db and reset primary index
         instance.getWritableDatabase().execSQL("delete from " + TABLE_NAME);
         instance.getWritableDatabase().execSQL("Delete from sqlite_sequence where name='" + TABLE_NAME + "'");
     }
@@ -146,9 +176,9 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public int rowCount() {
+        // Get the total number of rows from DB
 
         try {
-
             int count = (int) DatabaseUtils.queryNumEntries(instance.getReadableDatabase(), TABLE_NAME);
 
             return count;
@@ -174,7 +204,7 @@ public class Database extends SQLiteOpenHelper {
 
         } catch (NullPointerException npe) {
 
-            Log.d("Database - update Row", "NPE - Table doesn't exist");
+            Log.d("Update Row", "Table doesn't exist");
         }
     }
 
@@ -198,6 +228,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public String dateToString(Calendar date) {
+        // Format dates to nice strings for storage
         String strdate = null;
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -210,6 +241,8 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Calendar stringToDate(String date) {
+        // Here we format our strings back into dates
+
         Calendar cal = Calendar.getInstance();
 
         try {

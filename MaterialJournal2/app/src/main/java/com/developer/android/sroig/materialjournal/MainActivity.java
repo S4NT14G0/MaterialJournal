@@ -19,7 +19,7 @@ import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 
 /**
- * Created by roigs23 on 11/3/15.
+ * Created by Santiago Roig on 11/3/15.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -30,10 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        //Drop the table
+        //Drop the table for testing
         //Database.getInstance(this).dropTable();
 
-        // Uncomment to get rid of everything in DB
+        // Uncomment to get rid of everything in DB for testing
         //Database.getInstance(this).deleteAll();
 
         // Loads and adds in our table
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             // Get the first row from our DB
             JournalItem item = Database.getInstance(this).getRow(i);
 
-            // Check if our item is null incase the user deleted this card
+            // Check if our item is null in case the user deleted this card
             if (item != null) {
                 // Cards from https://github.com/gabrielemariotti/cardslib
                 Card card = new Card (this);
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 card.setTitle(Database.getInstance(this).dateToString(item.getDate()));
                 card.addCardHeader(header);
                 CardThumbnail thumb = new CardThumbnail(this);
-                thumb.setDrawableResource(R.drawable.ic_stars_black_18dp);
+                thumb.setDrawableResource(R.drawable.ic_description_black_36dp);
                 card.addCardThumbnail(thumb);
                 card.setId(item.getId() + "");
 
@@ -117,5 +117,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void openSearch(View view) {
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        startActivity(intent);
+    }
 
 }

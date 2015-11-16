@@ -1,5 +1,6 @@
 package com.developer.android.sroig.materialjournal;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -8,23 +9,28 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.developer.android.sroig.materialjournal.models.Database;
 import com.developer.android.sroig.materialjournal.models.JournalItem;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-/**
- * Created by roigs23 on 11/10/15.
- */
-public class JournalEditActivity extends AppCompatActivity{
+import java.util.Calendar;
 
+/**
+ * Created by Santiago Roig on 11/3/15.
+ */
+public class JournalEditActivity extends AppCompatActivity {
+
+    // Create references to our xml
     MaterialEditText editTextTitle;
     MaterialEditText editTextDate;
     MaterialEditText editTextTags;
     MaterialEditText editTextLocation;
     MaterialEditText editTextJournalEntry;
 
+    int year, month, day;
     int journalId;
 
     @Override
@@ -48,6 +54,7 @@ public class JournalEditActivity extends AppCompatActivity{
 
         // Load in the current Journal Item from DB
         loadJournalItem();
+        showDatePicker();
     }
 
     private void loadJournalItem() {
@@ -134,6 +141,34 @@ public class JournalEditActivity extends AppCompatActivity{
 
     }
 
+    DatePickerDialog.OnDateSetListener dpClickListen = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int _year, int _monthOfYear, int _dayOfMonth) {
+            // Click handler for our datepicker dialog
+            year = _year;
+            month = _monthOfYear + 1;
+            day = _dayOfMonth;
 
+            editTextDate.setText(month + "/" + day + "/" + year);
+        }
+    };
+
+    public void showDatePicker () {
+        // Intialize a datepicker
+
+        final Calendar cal = Calendar.getInstance();
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dpd = new DatePickerDialog(JournalEditActivity.this, dpClickListen, year, month, day);
+                dpd.show();
+            }
+        });
+    }
 
 }
+

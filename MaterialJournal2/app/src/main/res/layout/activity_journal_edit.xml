@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|left"
-            android:width="100dp"
+            android:width="250dp"
             android:id="@+id/textTitle"
             android:hint="Title"
             style="@style/met_Margin" />
@@ -43,7 +43,7 @@
             android:layout_gravity="top|left"
             android:hint="Date"
             android:width="100dp"
-            android:inputType="date"
+            android:editable="false"
             android:id="@+id/textDate" />
 
         <com.rengwuxian.materialedittext.MaterialEditText

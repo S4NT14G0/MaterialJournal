@@ -25,6 +25,10 @@
             android:label="Edit Journal Entry">
         </activity>
 
+        <activity android:name=".SearchActivity"
+            android:label="Search">
+        </activity>
+
     </application>
 
 </manifest>

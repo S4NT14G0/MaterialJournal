@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:card="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:width="300dp"
+            android:id="@+id/textSearch"
+            android:hint="Search by Tags"
+            style="@style/met_Margin" />
+
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fabSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/met_Margin"
+            android:layout_gravity="right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_search_black_24dp"
+            android:onClick="searchForJournalItem"
+            fab:fab_type="mini"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
+            fab:fab_colorRipple="@color/colorAccent"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent">
+
+
+        <it.gmariotti.cardslib.library.view.CardListView
+            android:id="@+id/mySearchList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            card:list_card_layout_resourceID="@layout/list_card_thumbnail_layout"
+            style="@style/list_card.thumbnail"/>
+    </FrameLayout>
+
+</LinearLayout>
